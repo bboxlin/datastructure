@@ -1,0 +1,95 @@
+#
+#  GitLab CI/CD configuration file
+#   This file describes how to build and test our projects
+#   You probably shouldn't edit this one for the CptS233 class
+#   More information on GitLab CI/CD is here:
+#      https://docs.gitlab.com/ce/ci/yaml/
+#
+#  Copyright 2019
+#  Contributors:
+#    Aaron S. Crandall <acrandal@wsu.edu>
+#    Sean Kallaher <sean.kallaher@wsu.edu>
+#
+
+# Default Docker image is an Alpine Linux release (3.10)
+#  Each job in the pipeline will run in a separate Alpine Linux environment
+image: alpine:3.10
+
+# Defining the two stages for this CI pipeline
+#   Stage 1 - build the software
+#   Stage 2 - test the starter software
+#   Stage 3 - test the assignment requirements
+stages:
+   - build
+   - starter-tests
+   - assignment-tests
+
+# Provides a general test for an existing class project's directory
+.projectmergetest: &projectmergetest |
+   if [ ! -d "$ASSIGNMENT_DIR" ]; then # assignment isn't in place
+   echo "No project dir";
+   echo "You should merge all projects to master";
+   echo "Go to the GitLab web interface and choose 'merge requests'"
+   exit 1;
+   fi
+
+# This is a template for all HW test templates to encompass dependencies and such
+#  It is used as a base for all HW written assignments
+.hw-test:
+    stage: assignment-tests
+    before_script:
+        - echo "Testing homework - $ASSIGNMENT_DIR"
+        - *projectmergetest
+        - echo "http://dl-3.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories
+        - echo "http://dl-3.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+        - apk add --update make bash >> /dev/null
+        - cd $ASSIGNMENT_DIR
+    allow_failure: true
+    script:
+        - make assignment-tests
+    tags:
+        - linux
+        - docker
+
+#************************************ MA1 ***********************************#
+MA1-HelloWorld-build:
+    stage: build
+    variables:
+        ASSIGNMENT_DIR: "MA1-HelloWorld"
+        JAVA_HOME: "/usr/lib/jvm/java-1.8-openjdk"
+    before_script:
+        - echo "Building project - $ASSIGNMENT_DIR"
+        - *projectmergetest            # See multiline block above
+        - export JAVA_HOME                      # Location for JAVA in Alpine
+        - export PATH="$JAVA_HOME/bin:$PATH"    # Add Java bin dir to path
+        - apk add --update openjdk8 >> /dev/null # Install OpenJDK8
+        - cd $ASSIGNMENT_DIR                    # Go into project dir
+    script:
+        - echo "Using javac to build HelloWorld.java"
+        - javac HelloWorld.java
+    allow_failure: true
+    tags:
+        - linux
+        - docker
+
+MA1-HelloWorld-Assignment-Tests:
+    stage: assignment-tests
+    variables:
+        ASSIGNMENT_DIR: "MA1-HelloWorld"
+        JAVA_HOME: "/usr/lib/jvm/java-1.8-openjdk"
+    before_script:
+        - echo "Building project - $ASSIGNMENT_DIR"
+        - *projectmergetest            # See multiline block above
+        - export JAVA_HOME
+        - export PATH="$JAVA_HOME/bin:$PATH"
+        - apk add --update openjdk8 python3 >> /dev/null
+        - cd $ASSIGNMENT_DIR
+    script:
+        - echo "Using javac to build HelloWorld.java"
+        - javac HelloWorld.java
+        - echo "Using python3 to test HelloWorld.class"
+        - python3 TestingHelloWorld.py
+    allow_failure: true
+    tags:
+        - linux
+        - docker
