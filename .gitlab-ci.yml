@@ -93,3 +93,9 @@ MA1-HelloWorld-Assignment-Tests:
     tags:
         - linux
         - docker
+
+#************************************ HW1 ***********************************#
+HW1-PDF-Check-Test:
+    extends: .hw-test
+    variables:
+        ASSIGNMENT_DIR: "HW1-BigO-Git"
