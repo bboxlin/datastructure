@@ -99,3 +99,46 @@ HW1-PDF-Check-Test:
     extends: .hw-test
     variables:
         ASSIGNMENT_DIR: "HW1-BigO-Git"
+
+# **************************** PA1 ********************************** #
+PA1-Benchmarking-build:
+    stage: build
+    variables:
+        ASSIGNMENT_DIR: "PA1-Benchmarking"
+        JAVA_HOME: "/usr/lib/jvm/java-1.8-openjdk"
+    before_script:
+        - echo "Building project - $ASSIGNMENT_DIR"
+        - *projectmergetest                     # See multiline block above
+        - export JAVA_HOME                      # Location for JAVA in Alpine
+        - export PATH="$JAVA_HOME/bin:$PATH"    # Add Java bin dir to path
+        - apk add --update openjdk8 make >> /dev/null # Install OpenJDK8
+        - cd $ASSIGNMENT_DIR                    # Go into project dir
+    script:
+        - echo "Using GNU make to build project"
+        - make build
+    allow_failure: true
+    tags:
+        - linux
+        - docker
+
+PA1-Benchmarking-Assignment-Tests-Short:
+    stage: assignment-tests
+    variables:
+        ASSIGNMENT_DIR: "PA1-Benchmarking"
+        JAVA_HOME: "/usr/lib/jvm/java-1.8-openjdk"
+    before_script:
+        - echo "Building project - $ASSIGNMENT_DIR"
+        - *projectmergetest            # See multiline block above
+        - export JAVA_HOME
+        - export PATH="$JAVA_HOME/bin:$PATH"
+        - apk add --update openjdk8 make >> /dev/null
+        - cd $ASSIGNMENT_DIR
+    script:
+        - echo "Using GNU make to build project"
+        - make build
+        - echo "Running project with input1.txt"
+        - make test
+    allow_failure: true
+    tags:
+        - linux
+        - docker
