@@ -142,3 +142,50 @@ PA1-Benchmarking-Assignment-Tests-Short:
     tags:
         - linux
         - docker
+
+
+#************************************ MA2 ***********************************#
+MA2-BSTAddRemove-build:
+    stage: build
+    variables:
+        ASSIGNMENT_DIR: "MA2-BSTAddRemoveHelpers"
+        JAVA_HOME: "/usr/lib/jvm/java-1.8-openjdk"
+    before_script:
+        - echo "Building project - $ASSIGNMENT_DIR"
+        - *projectmergetest            # See multiline block above
+        - export JAVA_HOME                      # Location for JAVA in Alpine
+        - export PATH="$JAVA_HOME/bin:$PATH"    # Add Java bin dir to path
+        - apk add --update openjdk8 make >> /dev/null # Install OpenJDK8
+        - cd $ASSIGNMENT_DIR                    # Go into project dir
+    script:
+        - echo "Using javac to build BSTAddRemove.java"
+        #- javac BSTAddRemove.java
+        - make build
+    allow_failure: true
+    tags:
+        - linux
+        - docker
+
+MA2-BSTAddRemove-Assignment-Tests:
+    stage: assignment-tests
+    variables:
+        ASSIGNMENT_DIR: "MA2-BSTAddRemoveHelpers"
+        JAVA_HOME: "/usr/lib/jvm/java-1.8-openjdk"
+    before_script:
+        - echo "Building project - $ASSIGNMENT_DIR"
+        - *projectmergetest            # See multiline block above
+        - export JAVA_HOME
+        - export PATH="$JAVA_HOME/bin:$PATH"
+        - apk add --update openjdk8 make >> /dev/null
+        - cd $ASSIGNMENT_DIR
+    script:
+        - echo "Using javac to build BSTAddRemove.java"
+        - make build
+        #- javac BSTAddRemove.java
+        - echo "Running BSTAddRemoveHelper"
+        - make test
+    allow_failure: true
+    tags:
+        - linux
+        - docker
+
