@@ -93,7 +93,21 @@ public class BinarySearchTree<T extends Comparable<T>> extends Collection<T> {
 		//   compareTo() iterface
 
 		// MA TODO
-
+		
+	 
+		//initial check and also recursive check
+		if(root == null) {
+			_size_counter++;
+			return new BinaryNode<T>(item);
+		}
+		//item>=root.val  --> heading to the right sub-tree
+		if(item.compareTo(root.getValue())> 0) {
+			root._right_child = addElementHelper(root._right_child,item);
+		}else if(item.compareTo(root.getValue())<0){ 
+			root._left_child = addElementHelper(root._left_child,item);
+		}
+		//NO ELSE, to not add with collision 
+		
 		//  Always return root because we don't know where the recursion ends
 		return root;
 	}
@@ -114,21 +128,50 @@ public class BinarySearchTree<T extends Comparable<T>> extends Collection<T> {
 		{
 			// Increment removal counter
 			_remove_counter++;
-			
+			 
+			 
 			// We found the item, so do we remove from the left or right?
 			if (_remove_counter % 2 == 0)
 			{
 				// Let's assume we are removing from the left when it's an even number
 				// MA TODO
-
+				
+				if(root._left_child != null  && root._right_child != null) {
+					BinaryNode <T> max = findLargest(root._left_child);
+					root.setValue(max.getValue());
+					root._left_child = removeElementHelper(root._left_child, root.getValue());
+				}else {
+					root = (root._left_child != null) ? root._left_child : root._right_child;
+				}
+				//(2,3) -> (2,2)
+				if(_remove_counter % 2 != 0) {
+					_remove_counter = 2;
+				}
 			}
 			else
 			{
-				// Remove from the right subtree when it's an odd number
-				// MA TODO
-
+//				// Remove from the right subtree when it's an odd number
+//				// MA TODO
+		 			
+				if(root._left_child != null  && root._right_child != null) {
+					BinaryNode <T> min = findSmallest(root._right_child);
+					root.setValue(min.getValue());
+					root._right_child = removeElementHelper(root._right_child, root.getValue());
+				}else {
+					root = (root._left_child != null) ? root._left_child : root._right_child;
+				}
+				
+				//because of using recursive approach, removecounter will +2 each time, then we will never get
+				//to the case of remove from left subtree, if removecount = even, we make it odd, so next time in to the item = node.val 
+				//the counter will be even, and even is to the left subtree
+				if(_remove_counter % 2 == 0) {
+					_remove_counter  = 1;
+				}
+				//(1,2) -> (1,1) 
+			 
 			}
 		}
+ 
 		else if (item.compareTo(root.getValue()) < 0)
 		{
 			// Item is less than root - go on finding it in the left subtree
@@ -141,6 +184,8 @@ public class BinarySearchTree<T extends Comparable<T>> extends Collection<T> {
 			//  left child's structure. Inform root of this change
 			root.setLeftChild(result);
 		}
+		
+		
 		else 
 		{
 			// Item is greater than root
@@ -151,10 +196,12 @@ public class BinarySearchTree<T extends Comparable<T>> extends Collection<T> {
 					);
 			root.setRightChild(result);
 		}
-		
 		return root;
 	}
-
+	
+ 
+	
+	
 	public void printPostorder() {
 		printPostorderHelper(_root);
 		System.out.println();
