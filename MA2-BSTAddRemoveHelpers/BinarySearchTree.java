@@ -97,14 +97,14 @@ public class BinarySearchTree<T extends Comparable<T>> extends Collection<T> {
 	 
 		//initial check and also recursive check
 		if(root == null) {
-			_size_counter++;
+			_size_counter++; //size increase once return a new object;
 			return new BinaryNode<T>(item);
 		}
 		//item>=root.val  --> heading to the right sub-tree
 		if(item.compareTo(root.getValue())> 0) {
-			root._right_child = addElementHelper(root._right_child,item);
+			root.setRightChild(addElementHelper(root.getRightChild(),item));
 		}else if(item.compareTo(root.getValue())<0){ 
-			root._left_child = addElementHelper(root._left_child,item);
+			root.setLeftChild(addElementHelper(root.getLeftChild(),item));
 		}
 		//NO ELSE, to not add with collision 
 		
@@ -135,37 +135,36 @@ public class BinarySearchTree<T extends Comparable<T>> extends Collection<T> {
 			{
 				// Let's assume we are removing from the left when it's an even number
 				// MA TODO
-	
-				if(root._left_child != null  && root._right_child != null) {
+				
+				//case when node wanted to delete has right and left child
+				
+				if(root.getLeftChild() != null  && root.getRightChild() != null) {
 					BinaryNode <T> max = findLargest(root._left_child);
 					root.setValue(max.getValue());
-					root._left_child = removeElementHelper(root._left_child, root.getValue());
+					root.setLeftChild(removeElementHelper(root.getLeftChild(), root.getValue()));
 				}else {
-					root = (root._left_child != null) ? root._left_child : root._right_child;
-				}
-				// 2nd (2,3) -> (2,2)    4th  (4,5)->(4,4)
-				if(_remove_counter % 2 != 0) {
+					//remove_counter will +1 additional time here, we have to -1 to make it only + 1 for a whole completed remove;
 					_remove_counter--;
+					
+					//two cases involved: node wanted to delete has one child or no child;
+					root = (root.getLeftChild() != null) ? root.getLeftChild() : root.getRightChild();
 				}
+
 			}
 			else
 			{
 //				// Remove from the right subtree when it's an odd number
 //				// MA TODO
-				if(root._left_child != null  && root._right_child != null) {
+				if(root.getLeftChild() != null  && root.getRightChild() != null) {
 					BinaryNode <T> min = findSmallest(root._right_child);
 					root.setValue(min.getValue());
-					root._right_child = removeElementHelper(root._right_child, root.getValue());
+					root.setRightChild(removeElementHelper(root.getRightChild(), root.getValue()));
 				}else {
-					root = (root._left_child != null) ? root._left_child : root._right_child;
-				}
-				//because of using recursive approach, removecounter will +2 each time, so a odd number + 2 still odd, we never have the change to the 
-				//even case, therefore, we set if the counter is reach to even we decrease -1 so that it keep the remove_counter ++ each time instead of
-				//+2 each time.
-				// 1st  (1,2) -> (1,1)     3rd (3,4)->(3,3)
-				if(_remove_counter % 2 == 0) {
+					//remove_counter will +1 additional time here, we have to -1 to make it only + 1 for a whole completed remove;
 					_remove_counter--;
-				}	
+					//two cases involved: node wanted to delete has one child or no child;
+					root = (root.getLeftChild() != null) ? root.getLeftChild() : root.getRightChild();
+				}
 			}
 		}
  
