@@ -189,3 +189,54 @@ MA2-BSTAddRemove-Assignment-Tests:
         - linux
         - docker
 
+
+#************************************ MA3 ***********************************#
+MA3-AVL-build:
+    stage: build
+    variables:
+        ASSIGNMENT_DIR: "MA3-AVL"
+        JAVA_HOME: "/usr/lib/jvm/java-1.8-openjdk"
+    before_script:
+        - echo "Building project - $ASSIGNMENT_DIR"
+        - *projectmergetest                     # See multiline block above
+        - export JAVA_HOME                      # Location for JAVA in Alpine
+        - export PATH="$JAVA_HOME/bin:$PATH"    # Add Java bin dir to path
+        - apk add --update openjdk8 make >> /dev/null # Install OpenJDK8
+        - cd $ASSIGNMENT_DIR                    # Go into project dir
+    script:
+        - echo "Using GNU make to build project"
+        - make build
+    allow_failure: true
+    tags:
+        - linux
+        - docker
+
+MA3-AVL-Assignment-Tests:
+    stage: assignment-tests
+    variables:
+        ASSIGNMENT_DIR: "MA3-AVL"
+        JAVA_HOME: "/usr/lib/jvm/java-1.8-openjdk"
+    before_script:
+        - echo "Building project - $ASSIGNMENT_DIR"
+        - *projectmergetest            # See multiline block above
+        - export JAVA_HOME
+        - export PATH="$JAVA_HOME/bin:$PATH"
+        - apk add --update openjdk8 make >> /dev/null
+        - cd $ASSIGNMENT_DIR
+    script:
+        - echo "Using GNU make to build project"
+        - make build
+        - echo "Running project with tests"
+        - make test
+    allow_failure: true
+    tags:
+        - linux
+        - docker
+
+
+#************************************ HW2 ***********************************#
+HW2-PDF-Check-Test:
+    extends: .hw-test
+    variables:
+        ASSIGNMENT_DIR: "HW2-Trees"
+
