@@ -26,18 +26,20 @@ public class AvlTree<T extends Comparable<T>> extends Collection<T>
 	protected AvlNode<T> rotateRight(AvlNode<T> root)
 	{
 		// Check for null roots
-		if (root == null)
+		if (root == null) {
 			return root;
-
-		// Remove this return and replace with the rotate algorithm
-		return root;
-		
+		}
 		// New root comes from left side
-		// Reassign right child to new root's left child
-		// Recalculate root's height as it has probably changed
-		// With that done, we can now reassign old root to new root
-		// And perform additional balances as necessary
-		// Return the new root
+		AvlNode<T> newRoot = root.getLeftChild();
+		
+		//Assign newRoot's right child to current root's left child.
+		root.setLeftChild(newRoot.getRightChild());
+		
+		//newRoot being a root by pointing root as its right child
+		newRoot.setRightChild(root);
+		
+		//return the newRoot 
+		return newRoot;
 	}
 
 	// MA TODO: Implement me SECOND!
@@ -46,15 +48,24 @@ public class AvlTree<T extends Comparable<T>> extends Collection<T>
 		// Check for null roots
 		if (root == null)
 			return root;
-
-		return root;
-		
-		// New root comes from right side
-		// Reassign right child to new root's left child
+ 
 		// Recalculate root's height as it has probably changed
 		// With that done, we can now reassign old root to new root
 		// And perform additional balances as necessary
 		// return the new root
+		
+	
+		AvlNode<T> newRoot = root.getRightChild();
+		
+		// Reassign right child to new root's left child
+		root.setRightChild(newRoot.getLeftChild());
+		
+		// With that done, we can now reassign old root to new root
+		newRoot.setLeftChild(root);
+		
+		return newRoot;
+		
+		
 	}
 	
 	// MA TODO: Implement me THIRD!
@@ -76,7 +87,53 @@ public class AvlTree<T extends Comparable<T>> extends Collection<T>
 		// Rotate as required, which returns a new root pointer
 		// Set new height on new root
 		// Return updated root
+		//imbalance occurs within right subtree    
 		
+		/*
+		 * 4 cases: right rotate, left-right rotate, left rotate,  right-left rotate;
+		 * 
+		 * getBalanceFactor = right height - left height
+		 * 
+		 * 1) left height is larger than right height more than 1, contains two possible rotations 
+		 * 	 (right rotation, left-right rotation)
+		 * 
+		 *     - right rotation:      when the tree is left heavier, we observed that if root's left subtree left
+		 *     						  most height is still greater than right most height, we do the right rotation.
+		 *                            
+		 *     - left-right rotation: We also noticed that if root's left subtree left most height is lower than
+		 *      					  the right most height, we should do the left rotation for the subtree first
+		 *                            then do the right rotation for the whole tree.
+		 *  
+		 * 2) right height is larger than left height more than 1, contains two possible rotations
+		 * 	 (left rotation, right-left rotation)
+		 * 
+		 * 	   - left rotation:       because the tree is right heavier, we observed that if root's right subtree right 
+		 *                            most height is still greater than left most height we should do left rotation.
+		 *                            
+		 *                            
+		 *     - right-left rotation: we also notice that if root's right subtree right most height is lower than the 
+		 *                            level most height, we should do the right rotation for the subtree first, then do 
+		 *                            the left rotation for the whole tree.
+		 * 
+		 */
+		if(root.getBalanceFactor()< -1) {
+			if(root.getLeftChild().getBalanceFactor()<0) { 
+				root = rotateRight(root);  //right rotation
+			}else {
+				AvlNode<T> newLeft = rotateLeft(root.getLeftChild()); //left rotation for the left subtree
+				root.setLeftChild(newLeft);  //connect new leftSubtree
+				root = rotateRight(root);  //right rotation for the whole tree
+			}
+		}else if(root.getBalanceFactor() > 1) {  
+			if(root.getRightChild().getBalanceFactor()>0) {
+				root = rotateLeft(root);  //left rotation
+			}else {
+				AvlNode<T> newRight = rotateRight(root.getRightChild()); //right rotation for the right subtree
+				root.setRightChild(newRight); //connect new rightSubtree
+				root = rotateLeft(root);  //left rotation for the whole tree
+			}
+			
+		}	
 		return root;
 	}
 
