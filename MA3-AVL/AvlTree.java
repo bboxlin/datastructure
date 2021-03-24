@@ -29,7 +29,7 @@ public class AvlTree<T extends Comparable<T>> extends Collection<T>
 		if (root == null) {
 			return root;
 		}
-		// New root comes from left side
+		//newRoot will be the root's left child
 		AvlNode<T> newRoot = root.getLeftChild();
 		
 		//Assign newRoot's right child to current root's left child.
@@ -49,12 +49,7 @@ public class AvlTree<T extends Comparable<T>> extends Collection<T>
 		if (root == null)
 			return root;
  
-		// Recalculate root's height as it has probably changed
-		// With that done, we can now reassign old root to new root
-		// And perform additional balances as necessary
-		// return the new root
-		
-	
+		//newRoot will be the root's right child
 		AvlNode<T> newRoot = root.getRightChild();
 		
 		// Reassign right child to new root's left child
@@ -63,9 +58,7 @@ public class AvlTree<T extends Comparable<T>> extends Collection<T>
 		// With that done, we can now reassign old root to new root
 		newRoot.setLeftChild(root);
 		
-		return newRoot;
-		
-		
+		return newRoot;		
 	}
 	
 	// MA TODO: Implement me THIRD!
@@ -98,7 +91,8 @@ public class AvlTree<T extends Comparable<T>> extends Collection<T>
 		 * 	 (right rotation, left-right rotation)
 		 * 
 		 *     - right rotation:      when the tree is left heavier, we observed that if root's left subtree left
-		 *     						  most height is still greater than right most height, we do the right rotation.
+		 *     						  height is still greater than or equal to the right height or, we do the right rotation.
+		 *    
 		 *                            
 		 *     - left-right rotation: We also noticed that if root's left subtree left most height is lower than
 		 *      					  the right most height, we should do the left rotation for the subtree first
@@ -108,29 +102,32 @@ public class AvlTree<T extends Comparable<T>> extends Collection<T>
 		 * 	 (left rotation, right-left rotation)
 		 * 
 		 * 	   - left rotation:       because the tree is right heavier, we observed that if root's right subtree right 
-		 *                            most height is still greater than left most height we should do left rotation.
+		 *                            height is still greater than or equal to the left height we should do left rotation.
 		 *                            
 		 *                            
-		 *     - right-left rotation: we also notice that if root's right subtree right most height is lower than the 
-		 *                            level most height, we should do the right rotation for the subtree first, then do 
+		 *     - right-left rotation: we also notice that if root's right subtree right height is lower than the 
+		 *                            left height, we should do the right rotation for the subtree first, then do 
 		 *                            the left rotation for the whole tree.
 		 * 
 		 */
-		if(root.getBalanceFactor()< -1) {
-			if(root.getLeftChild().getBalanceFactor()<0) { 
+		//condition for 1) above
+		if(root.getBalanceFactor()< -1) {   
+			if(root.getLeftChild().getBalanceFactor()>0) {  //left-right rotation
+				AvlNode<T> newLeft = rotateLeft(root.getLeftChild()); 
+				root.setLeftChild(newLeft);   
+				root = rotateRight(root);   
+			}else {
 				root = rotateRight(root);  //right rotation
-			}else {
-				AvlNode<T> newLeft = rotateLeft(root.getLeftChild()); //left rotation for the left subtree
-				root.setLeftChild(newLeft);  //connect new leftSubtree
-				root = rotateRight(root);  //right rotation for the whole tree
 			}
-		}else if(root.getBalanceFactor() > 1) {  
-			if(root.getRightChild().getBalanceFactor()>0) {
-				root = rotateLeft(root);  //left rotation
+		}
+		//condition for 2) above 
+		else if(root.getBalanceFactor() > 1) {  
+			if(root.getRightChild().getBalanceFactor()<0) { //right-left rotation
+				AvlNode<T> newRight = rotateRight(root.getRightChild());
+				root.setRightChild(newRight); 
+				root = rotateLeft(root);  
 			}else {
-				AvlNode<T> newRight = rotateRight(root.getRightChild()); //right rotation for the right subtree
-				root.setRightChild(newRight); //connect new rightSubtree
-				root = rotateLeft(root);  //left rotation for the whole tree
+				root = rotateLeft(root);  //left rotation
 			}
 			
 		}	
