@@ -50,7 +50,7 @@ class LinearHashTable<K, V> extends HashTableBase<K, V>
         int hash = super.getHash(key);
 
         // MA TODO: find empty slot to insert (update HashItem as necessary)
-		HashItem<K,V> slot = _items.get(hash);
+        HashItem<K,V> slot = _items.get(hash);
         while(!slot.isEmpty()) {
             hash++;
         	slot = _items.get(hash); //find the slot that is empty...
