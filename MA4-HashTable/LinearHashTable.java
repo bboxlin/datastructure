@@ -51,10 +51,11 @@ class LinearHashTable<K, V> extends HashTableBase<K, V>
         int hash = super.getHash(key);
 
         // MA TODO: find empty slot to insert (update HashItem as necessary)
-         
+        
+          
         HashItem<K,V> slot = _items.get(hash);
-        while(!slot.isEmpty()) {
-            hash++;
+        while(!slot.isEmpty() && slot.isTrueEmpty() != true) { //while not empty keep rehash, 
+            hash = (hash+1)%_items.size();
         	slot = _items.get(hash); //find the slot that is empty...
         }
         slot.setKey(key); //set the value here at the empty slot.
@@ -79,10 +80,10 @@ class LinearHashTable<K, V> extends HashTableBase<K, V>
         
      // MA TODO: find slot to remove. Remember to check for infinite loop!
         //  ALSO: Use lazy deletion - see structure of HashItem
-        int n = 0; //include size in case infinity loop
-        while(n< size() && slot.getKey() != key) {  //in case the corresponding key not the same...rehash...
-        	hash++;
-        	n++;
+        
+        //use isTrueEmpty to avoid infinity loop
+        while(slot.getKey() != key && slot.isTrueEmpty() != true) {  //in case the corresponding key not the same...rehash...
+        	hash = (hash+1)%_items.size();
         	slot = _items.elementAt(hash);
         }
         slot.setIsEmpty(true);
