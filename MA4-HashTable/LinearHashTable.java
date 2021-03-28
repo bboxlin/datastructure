@@ -1,3 +1,4 @@
+
 /*
  *  Microassignment: Probing Hash Table addElement and removeElement
  *
@@ -50,15 +51,17 @@ class LinearHashTable<K, V> extends HashTableBase<K, V>
         int hash = super.getHash(key);
 
         // MA TODO: find empty slot to insert (update HashItem as necessary)
+         
         HashItem<K,V> slot = _items.get(hash);
         while(!slot.isEmpty()) {
-         	hash++;
-         	slot = _items.get(hash); //find the slot that is empty...
+            hash++;
+        	slot = _items.get(hash); //find the slot that is empty...
         }
         slot.setKey(key); //set the value here at the empty slot.
         slot.setValue(value);
         slot.setIsEmpty(false);
         _number_of_elements++;
+        
 
 
         // Remember how many things we are presently storing (size N)
@@ -72,8 +75,9 @@ class LinearHashTable<K, V> extends HashTableBase<K, V>
     {
         // Calculate hash from key
         int hash = super.getHash(key);
-
-        // MA TODO: find slot to remove. Remember to check for infinite loop!
+        HashItem<K,V> slot = _items.elementAt(hash);
+        
+     // MA TODO: find slot to remove. Remember to check for infinite loop!
         //  ALSO: Use lazy deletion - see structure of HashItem
         int n = 0; //include size in case infinity loop
         while(n< size() && slot.getKey() != key) {  //in case the corresponding key not the same...rehash...
@@ -82,7 +86,7 @@ class LinearHashTable<K, V> extends HashTableBase<K, V>
         	slot = _items.elementAt(hash);
         }
         slot.setIsEmpty(true);
-        _number_of_elements--;
+       _number_of_elements--;
 
         // Make sure decrease hashtable size
     	//  Hint: do we always reduce the size whenever this function is called?
