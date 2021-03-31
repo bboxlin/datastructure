@@ -54,8 +54,7 @@ class LinearHashTable<K, V> extends HashTableBase<K, V>
         //find the locaiton of the HashItem from the hashtable 
         HashItem<K,V> slot = _items.get(hash);
        
-        //while not empty do linear probing
-        //!isTrueEmpty to prevent potential case for out of size
+        //we keep probing if key not equal and slot not true empty, we will have 3 cases below when we quite the while loop
         while(!slot.isTrueEmpty() && slot.getKey() != key) {  
             hash = (hash+1)%_items.size(); //linear probing
         	slot = _items.get(hash);
