@@ -44,30 +44,41 @@ class LinearHashTable<K, V> extends HashTableBase<K, V>
     // Concrete implementation for parent's addElement method
     public void addElement(K key, V value)
     {
-        // Check for size restrictions
+    	 // MA TODO: find empty slot to insert (update HashItem as necessary)
+    	// Check for size restrictions
         resizeCheck();
- 
-        // Calculate hash based on key
+
+        // Calculate hashkey based on data key
         int hash = super.getHash(key);
 
-        // MA TODO: find empty slot to insert (update HashItem as necessary)
-        
-          
+        //find the locaiton of the HashItem from the hashtable 
         HashItem<K,V> slot = _items.get(hash);
-        while(!slot.isEmpty() && slot.isTrueEmpty() != true) { //while not empty keep rehash, 
-            hash = (hash+1)%_items.size();
-        	slot = _items.get(hash); //find the slot that is empty...
-        }
-        slot.setKey(key); //set the value here at the empty slot.
-        slot.setValue(value);
-        slot.setIsEmpty(false);
-        _number_of_elements++;
+       
+        //while not empty do linear probing
+        //!isTrueEmpty to prevent potential case for out of size
+        while(!slot.isTrueEmpty() && slot.getKey() != key) {  
+            hash = (hash+1)%_items.size(); //linear probing
+        	slot = _items.get(hash);
         
-
-
-        // Remember how many things we are presently storing (size N)
-    	//  Hint: do we always increase the size whenever this function is called?
-        // _number_of_elements++;
+        }
+        
+        //case 1: slot exist and key equals and we just update the value
+        if(slot.getKey() == key && !slot.isEmpty()) {
+        	slot.setValue(value);
+        }
+        //case 2: slot marked deleted, but key equals then we update the value and mark it exist
+        else if(slot.getKey() == key && slot.isEmpty()) {
+        	slot.setValue(value);
+        	slot.setIsEmpty(false);//in case the slot previously marked deleted.
+        	_number_of_elements++;
+        }
+        //case 3: slot is truly empty
+        else if(slot.isTrueEmpty()) {
+        	slot.setKey(key); 
+        	slot.setValue(value);
+        	slot.setIsEmpty(false);
+        	_number_of_elements++;
+        }
 
     }
 
@@ -76,23 +87,24 @@ class LinearHashTable<K, V> extends HashTableBase<K, V>
     {
         // Calculate hash from key
         int hash = super.getHash(key);
-        HashItem<K,V> slot = _items.elementAt(hash);
+        HashItem<K,V> slot = _items.get(hash);
         
-     // MA TODO: find slot to remove. Remember to check for infinite loop!
+        // MA TODO: find slot to remove. Remember to check for infinite loop!
         //  ALSO: Use lazy deletion - see structure of HashItem
-        
-        //use isTrueEmpty to avoid infinity loop
-        while(slot.getKey() != key && slot.isTrueEmpty() != true) {  //in case the corresponding key not the same...rehash...
-        	hash = (hash+1)%_items.size();
-        	slot = _items.elementAt(hash);
+ 
+        //use isTrueEmpty to avoid infinity loop when the item not exist
+        //keep linear probing if the data key not match 
+        while(slot.getKey() != key && !slot.isTrueEmpty()) {  
+        	hash = (hash+1)%_items.size(); //linear probing
+        	slot = _items.get(hash);
         }
-        slot.setIsEmpty(true);
-       _number_of_elements--;
-
-        // Make sure decrease hashtable size
-    	//  Hint: do we always reduce the size whenever this function is called?
-        // _number_of_elements--;
         
+        //if slot data key equal to the key, we found what we want to delete
+        if(slot.getKey() == key && !slot.isEmpty()) {
+        	slot.setIsEmpty(true);//we want only mark it as deleted.
+        	_number_of_elements--;
+        }
+
     }
     
     // ***** MA Section End ************************************************ //
