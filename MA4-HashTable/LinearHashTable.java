@@ -65,19 +65,20 @@ class LinearHashTable<K, V> extends HashTableBase<K, V>
         //case 1: slot exist and key equals and we just update the value
         if(slot.getKey() == key && !slot.isEmpty()) {
         	slot.setValue(value);
+        	//do not ++size because slot exist just the value changed
         }
         //case 2: slot marked deleted, but key equals then we update the value and mark it exist
         else if(slot.getKey() == key && slot.isEmpty()) {
         	slot.setValue(value);
         	slot.setIsEmpty(false);//in case the slot previously marked deleted.
-        	_number_of_elements++;
+        	_number_of_elements++; //++size because we just marked it exists
         }
         //case 3: slot is truly empty
         else if(slot.isTrueEmpty()) {
         	slot.setKey(key); 
         	slot.setValue(value);
         	slot.setIsEmpty(false);
-        	_number_of_elements++;
+        	_number_of_elements++;//++size because we marked it exists
         }
 
     }
@@ -87,19 +88,22 @@ class LinearHashTable<K, V> extends HashTableBase<K, V>
     {
         // Calculate hash from key
         int hash = super.getHash(key);
-        HashItem<K,V> slot = _items.get(hash);
+        
         
         // MA TODO: find slot to remove. Remember to check for infinite loop!
         //  ALSO: Use lazy deletion - see structure of HashItem
  
-        //use isTrueEmpty to avoid infinity loop when the item not exist
-        //keep linear probing if the data key not match 
+        HashItem<K,V> slot = _items.get(hash);
+        
+        //if slot is truly empty and key not equal, we keep probing.
+        //case that went out the while loop: key equals and not true empty:
         while(slot.getKey() != key && !slot.isTrueEmpty()) {  
         	hash = (hash+1)%_items.size(); //linear probing
         	slot = _items.get(hash);
         }
         
-        //if slot data key equal to the key, we found what we want to delete
+        //when key equals, the slot might be marked exist or deleted.
+        //our purpose is remove, so we mark exist to deleted.
         if(slot.getKey() == key && !slot.isEmpty()) {
         	slot.setIsEmpty(true);//we want only mark it as deleted.
         	_number_of_elements--;
