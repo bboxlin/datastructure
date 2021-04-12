@@ -328,3 +328,10 @@ MA6-Heaps-Assignment-Tests:
         - linux
         - docker
 
+
+#************************************ HW3 ***********************************#
+HW3-HashHeapSort-Check-Test:
+    extends: .hw-test
+    variables:
+        ASSIGNMENT_DIR: "HW3-HashHeapSort"
+
