@@ -179,24 +179,23 @@ public class BinaryHeap<AnyType extends Comparable<? super AnyType>>
     				break;
     			}
     		}
-    		//Case 2 Left child and right child are existed.
-    		else if(data.get(i).compareTo(data.get(2*i+1))>0 || data.get(i).compareTo(data.get(2*i+2))>0) {
-    			if(data.get(2*i+1).compareTo(data.get(2*i+2))<= 0) {
-    				AnyType temp = data.get(2*i+1);
-        			data.set(i*2+1, data.get(i));
-        			data.set(i, temp);
-        			i = i*2+1;
-    			}else if(data.get(2*i+1).compareTo(data.get(2*i+2))> 0){
-    				AnyType temp = data.get(2*i+2);
-    				data.set(i*2+2, data.get(i));
-    				data.set(i, temp);
-    				i = i*2+2;
-    			}else {
-    				break; 
-    			}
-    		}
+    		//Case 2 Left child and right child are existed.	
     		else {
-    			 break; //good order, break.
+    			 if(data.get(i).compareTo(data.get(2*i+1))>0 || data.get(i).compareTo(data.get(2*i+2))>0) {
+    	    			if(data.get(2*i+1).compareTo(data.get(2*i+2))<= 0) {
+    	    				AnyType temp = data.get(2*i+1);
+    	        			data.set(i*2+1, data.get(i));
+    	        			data.set(i, temp);
+    	        			i = i*2+1;
+    	    			}else if(data.get(2*i+1).compareTo(data.get(2*i+2))> 0){
+    	    				AnyType temp = data.get(2*i+2);
+    	    				data.set(i*2+2, data.get(i));
+    	    				data.set(i, temp);
+    	    				i = i*2+2;
+    	    			}		
+    			 }else {
+    				 break; //in good order!
+    			 }
     		}
  
     	}
