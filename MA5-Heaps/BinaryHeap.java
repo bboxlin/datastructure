@@ -174,7 +174,7 @@ public class BinaryHeap<AnyType extends Comparable<? super AnyType>>
     				data.set(i*2+1, data.get(i));
     				data.set(i, temp);
     				i = i*2+1;
-    				break;
+    				break; //break, since heap ended.
     			}else { //this is case where current node and left child node in good order, no need change, then break.
     				break;
     			}
@@ -192,10 +192,11 @@ public class BinaryHeap<AnyType extends Comparable<? super AnyType>>
     				data.set(i, temp);
     				i = i*2+2;
     			}else {
-    				break; //good order so break.
+    				break; //actually no need break here....
     			}
-    		}else {
-    			 break; //other situations, break.
+    		}
+    		else {
+    			 break; //good order, break.
     		}
  
     	}
