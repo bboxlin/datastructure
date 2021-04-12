@@ -111,12 +111,15 @@ public class BinaryHeap<AnyType extends Comparable<? super AnyType>>
     		ensureHeapSize(currentSize*2);
     	}
     	
-    	//here the data list element are null, we use currentSize to track the position of connecting x to the last element in heap.
+    	//here the data list element are null, we use currentSize to track the position and set x as the last element in heap.
     	data.set(currentSize, x);
+    
+    	//after set x, incre the currentSize
         currentSize++;
-        int index = currentSize-1;
-        //parent: (i-1)/2
         
+        int index = currentSize-1;
+       
+        //parent: (i-1)/2
         //time to swap, if current'val > parent's val 
         while(index > 0 && data.get(index).compareTo(data.get((index-1)/2)) < 0) {
       		//swap
@@ -133,35 +136,50 @@ public class BinaryHeap<AnyType extends Comparable<? super AnyType>>
 //        // MA TODO: Write some kind of heap/percolateUp function
 //    	
 //    	
-    	//left child index: 2i+1,   right child index: 2i+2
-    	//data.get(2*i+1) != null || data.get(2*i+2) != null
+    	
     	int i = hole;
+    	 
+    	/* 
+    	 *  left child index: 2i+1,   right child index: 2i+2
+    	 *  
+    	 * (left child != null or right child != null) for the condition to continue looping
+    	 * 
+    	 *  From the truth table: 
+    	 *  
+    	 *  Left child      Right child   (where 0 = null , 1 = existed)
+    	 *   0                   0       -----> exist the loop     
+    	 *   0                   1       -----> Not Valid for the heap, explanation in line 155.
+    	 *   1                   0 
+    	 *   1                   1
+    	 * 
+    	 *   But! By definition of heap: we know that if left child is null, then of course right child cannot be existed(null).
+    	 *   
+    	 *   Hence, we left out only two situations to consider:
+    	 *   1. Left child existed and right child is null.
+    	 *   		- compare then current val and left child val to determine if need to swap.
+    	 *          - if no need, meaning they are in good order, break;
+    	 *   2. Left child and right child are existed.
+    	 *          - then we compare current val to left and right child value, in a OR gate, 
+    	 *            if true, we then need to do some swap.
+    	 *          - by so, we determine which child has the lower value to be the one get swap
+    	 *            by current node.
+    	 *    
+    	 */
     	while(data.get(2*i+1) !=null || data.get(2*i+2) !=null){
     		 
-    		//in case that the right child is null, and leftchild<current, swap left
-    		if(data.get(2*i+2) == null) {
+    		//Case 1 Left child existed and right child is null.
+    		if(data.get(2*1+1)!=null && data.get(2*i+2) == null) {
     			if(data.get(i).compareTo(data.get(2*i+1))>0) {
     				AnyType temp = data.get(2*i+1);
     				data.set(i*2+1, data.get(i));
     				data.set(i, temp);
     				i = i*2+1;
     				break;
-    			}else {
+    			}else { //this is case where current node and left child node in good order, no need change, then break.
     				break;
     			}
     		}
-    		//in case that left child is null, and rightchild<current, swap right
-    		else if(data.get(2*i+1) == null) {
-    			if(data.get(i).compareTo(data.get(2*i+2))>0) {
-    				AnyType temp = data.get(2*i+2);
-    				data.set(i*2+2, data.get(i));
-    				data.set(i, temp);
-    				i = i*2+2;
-    				break;
-    			}else {
-    				break;
-    			}
-    		}
+    		//Case 2 Left child and right child are existed.
     		else if(data.get(i).compareTo(data.get(2*i+1))>0 || data.get(i).compareTo(data.get(2*i+2))>0) {
     			if(data.get(2*i+1).compareTo(data.get(2*i+2))<= 0) {
     				AnyType temp = data.get(2*i+1);
@@ -174,10 +192,10 @@ public class BinaryHeap<AnyType extends Comparable<? super AnyType>>
     				data.set(i, temp);
     				i = i*2+2;
     			}else {
-    				break;
+    				break; //good order so break.
     			}
     		}else {
-    			 break;
+    			 break; //other situations, break.
     		}
  
     	}
