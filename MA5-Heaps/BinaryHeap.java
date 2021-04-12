@@ -120,7 +120,7 @@ public class BinaryHeap<AnyType extends Comparable<? super AnyType>>
         int index = currentSize-1;
        
         //parent: (i-1)/2
-        //time to swap, if current'val > parent's val 
+        //time to swap, if current'val < parent's val 
         while(index > 0 && data.get(index).compareTo(data.get((index-1)/2)) < 0) {
       		//swap
        		AnyType temp = data.get(index);
@@ -192,7 +192,7 @@ public class BinaryHeap<AnyType extends Comparable<? super AnyType>>
     				data.set(i, temp);
     				i = i*2+2;
     			}else {
-    				break; //actually no need break here....
+    				break; 
     			}
     		}
     		else {
