@@ -306,7 +306,7 @@ MA5-Heaps-build:
         - linux
         - docker
 
-MA6-Heaps-Assignment-Tests:
+MA5-Heaps-Assignment-Tests:
     stage: assignment-tests
     variables:
         ASSIGNMENT_DIR: "MA5-Heaps"
@@ -335,3 +335,8 @@ HW3-HashHeapSort-Check-Test:
     variables:
         ASSIGNMENT_DIR: "HW3-HashHeapSort"
 
+#************************************ HW4 ***********************************#
+HW4-Graphs-Check-Test:
+    extends: .hw-test
+    variables:
+        ASSIGNMENT_DIR: "HW4-Graphs"
