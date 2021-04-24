@@ -340,3 +340,113 @@ HW4-Graphs-Check-Test:
     extends: .hw-test
     variables:
         ASSIGNMENT_DIR: "HW4-Graphs"
+
+
+#************************************ MA6 ***********************************#
+MA6-Sorting-build:
+    stage: build
+    variables:
+        ASSIGNMENT_DIR: "MA6-Sorting"
+        JAVA_HOME: "/usr/lib/jvm/java-1.8-openjdk"
+    before_script:
+        - echo "Building project - $ASSIGNMENT_DIR"
+        - *projectmergetest                     # See multiline block above
+        - export JAVA_HOME                      # Location for JAVA in Alpine
+        - export PATH="$JAVA_HOME/bin:$PATH"    # Add Java bin dir to path
+        - apk add --update openjdk8 make >> /dev/null # Install OpenJDK8
+        - cd $ASSIGNMENT_DIR                    # Go into project dir
+    script:
+        - echo "Using GNU make to build project"
+        - make build
+    allow_failure: true
+    tags:
+        - linux
+        - docker
+
+MA6-Sorting-Assignment-Tests:
+    stage: assignment-tests
+    variables:
+        ASSIGNMENT_DIR: "MA6-Sorting"
+        JAVA_HOME: "/usr/lib/jvm/java-1.8-openjdk"
+    before_script:
+        - echo "Building project - $ASSIGNMENT_DIR"
+        - *projectmergetest            # See multiline block above
+        - export JAVA_HOME
+        - export PATH="$JAVA_HOME/bin:$PATH"
+        - apk add --update openjdk8 make >> /dev/null
+        - cd $ASSIGNMENT_DIR
+    script:
+        - echo "Using GNU make to build project"
+        - make build
+        - echo "Running project with tests"
+        - make test
+    allow_failure: true
+    tags:
+        - linux
+        - docker
+
+MA6-Sorting-Assignment-Tests-Thousands:
+    stage: assignment-tests
+    variables:
+        ASSIGNMENT_DIR: "MA6-Sorting"
+        JAVA_HOME: "/usr/lib/jvm/java-1.8-openjdk"
+    before_script:
+        - echo "Building project - $ASSIGNMENT_DIR"
+        - *projectmergetest            # See multiline block above
+        - export JAVA_HOME
+        - export PATH="$JAVA_HOME/bin:$PATH"
+        - apk add --update openjdk8 make >> /dev/null
+        - cd $ASSIGNMENT_DIR
+    script:
+        - echo "Using GNU make to build project"
+        - make build
+        - echo "Running project with tests"
+        - make test_thousands
+    allow_failure: true
+    tags:
+        - linux
+        - docker
+
+#************************************ PA2 ***********************************#
+PA2-StringDups-build:
+    stage: build
+    variables:
+        ASSIGNMENT_DIR: "PA2-StringDups"
+        JAVA_HOME: "/usr/lib/jvm/java-1.8-openjdk"
+    before_script:
+        - echo "Building project - $ASSIGNMENT_DIR"
+        - *projectmergetest                     # See multiline block above
+        - export JAVA_HOME                      # Location for JAVA in Alpine
+        - export PATH="$JAVA_HOME/bin:$PATH"    # Add Java bin dir to path
+        - apk add --update openjdk8 make >> /dev/null # Install OpenJDK8
+        - cd $ASSIGNMENT_DIR                    # Go into project dir
+    script:
+        - echo "Using GNU make to build project"
+        - make build
+    allow_failure: true
+    tags:
+        - linux
+        - docker
+
+PA2-StringDups-Assignment-Tests:
+    stage: assignment-tests
+    variables:
+        ASSIGNMENT_DIR: "PA2-StringDups"
+        JAVA_HOME: "/usr/lib/jvm/java-1.8-openjdk"
+    before_script:
+        - echo "Building project - $ASSIGNMENT_DIR"
+        - *projectmergetest            # See multiline block above
+        - export JAVA_HOME
+        - export PATH="$JAVA_HOME/bin:$PATH"
+        - apk add --update openjdk8 make >> /dev/null
+        - cd $ASSIGNMENT_DIR
+    script:
+        - echo "Using GNU make to build project"
+        - make build
+        - echo "Running project with tests"
+        - make test
+    allow_failure: true
+    tags:
+        - linux
+        - docker
+
