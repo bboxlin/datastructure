@@ -1,5 +1,6 @@
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 
 
@@ -48,9 +49,9 @@ public class RadixSort<T extends Comparable<T>> extends Sorter<T>  {
 		int digit = getMaxDigit(stats, data);
 		
 		//construct up the structure buckets in side of the list of buckets
-		ArrayList<ArrayList<T>> bucketList = new ArrayList<>();
+		ArrayList<LinkedList<T>> bucketList = new ArrayList<>();
 		for(int i = 0; i< 10; i++) {
-			ArrayList<T> bucket = new ArrayList<>(); //buckets
+			LinkedList<T> bucket = new LinkedList<>(); //buckets
 			bucketList.add(bucket);
 		}
 		
@@ -69,7 +70,7 @@ public class RadixSort<T extends Comparable<T>> extends Sorter<T>  {
 				Object curval = cur;
 				
 				//digitVal = value of the current digit = position of the bucketList, then add currentValue (Linkedlist) to that position.
-				bucketList.get(digitVal).add((T)curval);
+				bucketList.get(digitVal).addLast((T)curval);
 			}
 			i++;
 			mod*=10;
@@ -87,10 +88,12 @@ public class RadixSort<T extends Comparable<T>> extends Sorter<T>  {
 	 * Function: To reset the data list in the new order, the order is according to the elements in the buckets.
 	 * 
 	 */
-	private void setDataList(ArrayList<T> data, ArrayList<ArrayList<T>> bucketList) {
+	private void setDataList(ArrayList<T> data, ArrayList<LinkedList<T>> bucketList) {
 		data.clear();
-		for (ArrayList<T> currList : bucketList) { 
-            data.addAll(currList);
+		for (LinkedList<T> currList : bucketList) { 
+			for(int i = 0; i<currList.size();i++) {
+				data.add(currList.get(i));
+			}
             currList.clear();
         }
 	 

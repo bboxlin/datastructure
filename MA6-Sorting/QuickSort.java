@@ -18,6 +18,22 @@ public class QuickSort<T extends Comparable<T>> extends Sorter<T> {
     QuickSort() {
         name = "QuickSort";
     }
+    
+    
+    /*
+     *  Through the reference of the stable quickSort
+     *  https://www.geeksforgeeks.org/stable-quicksort/
+     *  
+     *  Steps: (Divide and Conquer Concept apply to pivot's left and right sub list.
+     *  
+     *  1: pick pivot from middle of list
+     *  2. Add elements that smaller than pivot to the left-sub list
+     *  3. Add elements that larger than pivot to the right-sub list
+     *  4. Elements that maybe equivalent to the pivot, to stay at its original side.
+     *  5. Recursively do steps 1-4 for each side.
+     *  6. At final step(when backtracking completed): smallSub + pivot + rightSub is sorted.
+     *  
+     */
 
   	public ArrayList<T> sort(SortStats stats, ArrayList<T> data) {
 
@@ -26,6 +42,7 @@ public class QuickSort<T extends Comparable<T>> extends Sorter<T> {
         //  Every data comparison increment stats.comparisons
         //  Every data swap increment stats.swaps
         //  See Insertion Sort for an example of this in operation
+  		
   		if(data.size()>1) {
   			int mid = data.size()/2;
 	  		T pivot = data.get(mid);
@@ -34,6 +51,7 @@ public class QuickSort<T extends Comparable<T>> extends Sorter<T> {
 	  		
 	  		for(int i = 0; i<data.size();i++) {
 	  			if(i != mid) {
+	  				stats.comparisons++;
 	  				if(data.get(i).compareTo(pivot)<0) {
 		  				smallSub.add(data.get(i));
 		  			}else if (data.get(i).compareTo(pivot)>0) {
@@ -59,98 +77,6 @@ public class QuickSort<T extends Comparable<T>> extends Sorter<T> {
 	  		data.add(pivot);
 	  		data.addAll(largeSub);
   		}
-  		
-		return data;
-		 
+		return data;	 
 	}
-  	
-   
-  	
-  	 
-   
- 
-
-	/*
-  	 * <<Helper Method>>
-  	 * Partition method purpose, this method will be recursively called by quickSort: 
-  	 * 		arrange all elements left to the pivotIndex to be smaller than pivot, all elements right to the pivotIndex to be larger than pivot;
-  	 * 
-  	 * Pivot = first element of the data List passing in.
-  	 * Pointers = left and right.
-  	 * 
-  	 * 1. Traversing pointers right to the left and left to the right.
-  	 * 
-  	 * 2. Swap left's element & right's elements if, at data[r] < pivot, or data[l] > pivot:
-  	 *
-  	 * 3. Eventually l=r, where l = r = pivot new index.
-  	 * 
-  	 * 4. return pivotIndex for the use of partitioning.
-  	 */
-  	private int partition(SortStats stats, ArrayList<T> data, ArrayList<T> tempList, int l, int r) {
-  			int index;
-  			T pivot = data.get(l);
-  			tempList.clear();
-  	  		 
-  	  		for(int i = l+1; i<=r;i++) {
-  	  			T item = data.get(i);
-  	  			if(item.compareTo(pivot)<0) {
-  	  				tempList.add(item);
-  	  			}
-  	  		}
-  	  		index = l+tempList.size();
-  	  		tempList.add(pivot);
-  	  	
-  	  		for(int i = l+1; i<=r; i++) {
-  	  			T item = data.get(i);
-  	  			if(item.compareTo(pivot)>=0) {
-  	  				tempList.add(item);
-  	  			}
-  	  		}
-  	  		 
-  	  		for(int i = 0; i<tempList.size();i++) {
-  	  			data.set(i, tempList.get(i));
-  	  			
-  	  		}
-  	  		 
-  	
-  		return index;
-  	 
-  		 
-//  		while(l<r) {
-//  			 
-//  			
-//  			while(l<r && data.get(r).compareTo(pivot)>=0) {
-//  				stats.comparisons++;
-//  				r--; //keep traversing to the left.
-//  			}
-//  			stats.comparisons++; //one more comparisons when not entering the while loop
-//  		
-//  			if(l<r) {
-//  				stats.swaps++;
-//  				swap(data, l, r); //swap the left's & right's elements
-//  				l++; //left index ++ since element smaller than pivot has been swap to the left.
-//  			}
-//  			
-//  			while(l<r && data.get(l).compareTo(pivot)<=0) {
-//  				stats.comparisons++;
-//  				l++;  //keep traversing to the right.
-//  			}
-//  			stats.comparisons++; //one more comparisons when not entering the while loop
-//  			
-//  			if(l<r) {
-//  				stats.swaps++;
-//  				swap(data, l, r);
-//  				r--; //right index -- since element larger than pivot has been swap to the right.
-//  			}
-//  		}
-//  		return l; //where l = r, either l or r is the pivotIndex, return for the partition use.
-  	}
-
-  	//swap helper method
-  	private void swap (ArrayList<T> data, int l, int r) {
-  		T temp = data.get(l);
-  		data.set(l, data.get(r));
-  		data.set(r, temp);
-  	}
-  	
 }
