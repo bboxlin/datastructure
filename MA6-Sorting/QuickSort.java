@@ -9,7 +9,7 @@
  *   http://creativecommons.org/licenses/by-nc-nd/4.0
  */
 
-import java.util.ArrayList;
+import java.util.ArrayList; 
  
 
 public class QuickSort<T extends Comparable<T>> extends Sorter<T> {
@@ -26,78 +26,49 @@ public class QuickSort<T extends Comparable<T>> extends Sorter<T> {
         //  Every data comparison increment stats.comparisons
         //  Every data swap increment stats.swaps
         //  See Insertion Sort for an example of this in operation
-  	 
-  	   ArrayList<T> newD= quickSort(stats, data);
-  	   for(int i = 0;i<newD.size();i++) {
-  		   data.set(i, newD.get(i));
-  	   }
-  	 return data;
-  	
+  		if(data.size()>1) {
+  			int mid = data.size()/2;
+	  		T pivot = data.get(mid);
+	  		ArrayList<T> smallSub = new ArrayList<>();
+	  		ArrayList<T> largeSub = new ArrayList<>();
+	  		
+	  		for(int i = 0; i<data.size();i++) {
+	  			if(i != mid) {
+	  				if(data.get(i).compareTo(pivot)<0) {
+		  				smallSub.add(data.get(i));
+		  			}else if (data.get(i).compareTo(pivot)>0) {
+		  				largeSub.add(data.get(i));
+		  			}else {
+		  				if(i<mid) {
+		  					smallSub.add(data.get(i));
+		  				}else {
+		  					largeSub.add(data.get(i));
+		  				}
+		  			}
+	  			}
+	  			 
+	  		}
+	  		if(smallSub.size()>1) {
+	  			sort(stats, smallSub);
+	  		}
+	  		if(largeSub.size()>1) {
+	  			sort(stats, largeSub);
+	  		}
+	  		data.removeAll(data);
+	  		data.addAll(smallSub);
+	  		data.add(pivot);
+	  		data.addAll(largeSub);
+  		}
+  		
+		return data;
 		 
 	}
   	
+   
   	
-  	private ArrayList<T> quickSort(SortStats stats, ArrayList<T> data) {
-  		if(data.size()<=1) {
-  			return data;
-  		}
-  		ArrayList<T> smaller = new ArrayList<>();
-  		ArrayList<T> larger = new ArrayList<>();
-  		
-  		int mid = data.size()/2;
-  		T pivot = data.get(mid);
-  		
-  		for(int i = 0; i<data.size(); i++) {
-  			T val = data.get(i);
-  			if(i != mid) {
-  				if(val.compareTo(pivot)<0) {
-  					smaller.add(val);
-  				}else if(val.compareTo(pivot)>0) {
-  					larger.add(val);
-  				}else {
-  					
-  					if(i<mid) {
-  						smaller.add(val);
-  					}else {
-  						larger.add(val);
-  					}
-  					
-  				}
-  			}
-  		}
-  		ArrayList<T> ans = new ArrayList<T>();
-  		ArrayList<T> sa1 = quickSort(stats,smaller);
-  		ArrayList<T> sa2 = quickSort(stats, larger);
-  		
-      for(T val1 : sa1)
-          ans.add(val1);
-           
-     // add pivat element into ans list   
-     ans.add(pivot);
-      
-     // add all elements of greater list into ans list
-     for(T val2 : sa2)
-          ans.add(val2);
-      
-     // return ans list
-     return ans;        
-  		
-  		
-//  		if(l<r) {
-//  			
-//  			int pivotIndex = partition(stats, data,tempList, l,r);
-//  			
-//  	  	  	 //recursively do the partition to the left partition, until l = r 
-//  	  	  	 quickSort(stats, data, tempList, l, pivotIndex-1);
-//  	  	  	  			
-//  	  	  	 //recursively do the partition to the to the right partition until l = r
-//  	  	  	 quickSort(stats, data, tempList, pivotIndex+1, r);
-//  		}
-
-  	  				
-  	}
-  	
-  
+  	 
+   
+ 
 
 	/*
   	 * <<Helper Method>>
