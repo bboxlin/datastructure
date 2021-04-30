@@ -33,6 +33,9 @@ public class QuickSort<T extends Comparable<T>> extends Sorter<T> {
   	
   	
   	private void quickSort(SortStats stats, ArrayList<T> data, int l, int r) {
+  		if(l>=r) {
+  			return;
+  		}
 
   		int pivotIndex = partition(stats, data, l,r);
   			
