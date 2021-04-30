@@ -26,54 +26,74 @@ public class QuickSort<T extends Comparable<T>> extends Sorter<T> {
         //  Every data comparison increment stats.comparisons
         //  Every data swap increment stats.swaps
         //  See Insertion Sort for an example of this in operation
- 
-  		//quickSort(stats, data, 0, data.size()-1);
-  		
-  		if(data.size()>1) {
-	  		T pivot = data.get(0);
-	  		ArrayList<T> smallSub = new ArrayList<>();
-	  		ArrayList<T> largeSub = new ArrayList<>();
-	  		
-	  		for(int i = 1; i<data.size();i++) {
-	  			stats.comparisons++;
-	  			if(data.get(i).compareTo(pivot)<=0) {
-	  				smallSub.add(data.get(i));
-	  			}else {
-	  				largeSub.add(data.get(i));
-	  			}
-	  		}
-	  		if(smallSub.size()>1) {
-	  			sort(stats, smallSub);
-	  		}
-	  		if(largeSub.size()>1) {
-	  			sort(stats, largeSub);
-	  		}
-	  		data.removeAll(data);
-	  		data.addAll(smallSub);
-	  		data.add(pivot);
-	  		data.addAll(largeSub);
-  		}
-  		
-		return data;
+  	 
+  	   ArrayList<T> newD= quickSort(stats, data);
+  	   for(int i = 0;i<newD.size();i++) {
+  		   data.set(i, newD.get(i));
+  	   }
+  	 return data;
   	
-		//return data;
+		 
 	}
   	
   	
-  	private void quickSort(SortStats stats, ArrayList<T> data, int l, int r) {
-  		
-  		if(l<r) {
-  			
-  			int pivotIndex = partition(stats, data, l,r);
-  			
-  	  	  	//recursively do the partition to the left partition, until l = r 
-  	  	  	quickSort(stats, data, l, pivotIndex-1);
-  	  	  			
-  	  	  	//recursively do the partition to the to the right partition until l = r
-  	  	  	quickSort(stats, data, pivotIndex+1, r);
+  	private ArrayList<T> quickSort(SortStats stats, ArrayList<T> data) {
+  		if(data.size()<=1) {
+  			return data;
   		}
+  		ArrayList<T> smaller = new ArrayList<>();
+  		ArrayList<T> larger = new ArrayList<>();
+  		
+  		int mid = data.size()/2;
+  		T pivot = data.get(mid);
+  		
+  		for(int i = 0; i<data.size(); i++) {
+  			T val = data.get(i);
+  			if(i != mid) {
+  				if(val.compareTo(pivot)<0) {
+  					smaller.add(val);
+  				}else if(val.compareTo(pivot)>0) {
+  					larger.add(val);
+  				}else {
+  					
+  					if(i<mid) {
+  						smaller.add(val);
+  					}else {
+  						larger.add(val);
+  					}
+  					
+  				}
+  			}
+  		}
+  		ArrayList<T> ans = new ArrayList<T>();
+  		ArrayList<T> sa1 = quickSort(stats,smaller);
+  		ArrayList<T> sa2 = quickSort(stats, larger);
+  		
+      for(T val1 : sa1)
+          ans.add(val1);
+           
+     // add pivat element into ans list   
+     ans.add(pivot);
+      
+     // add all elements of greater list into ans list
+     for(T val2 : sa2)
+          ans.add(val2);
+      
+     // return ans list
+     return ans;        
+  		
+  		
+//  		if(l<r) {
+//  			
+//  			int pivotIndex = partition(stats, data,tempList, l,r);
+//  			
+//  	  	  	 //recursively do the partition to the left partition, until l = r 
+//  	  	  	 quickSort(stats, data, tempList, l, pivotIndex-1);
+//  	  	  	  			
+//  	  	  	 //recursively do the partition to the to the right partition until l = r
+//  	  	  	 quickSort(stats, data, tempList, pivotIndex+1, r);
+//  		}
 
-  		 
   	  				
   	}
   	
@@ -95,37 +115,64 @@ public class QuickSort<T extends Comparable<T>> extends Sorter<T> {
   	 * 
   	 * 4. return pivotIndex for the use of partitioning.
   	 */
-  	private int partition(SortStats stats, ArrayList<T> data, int l, int r) {
+  	private int partition(SortStats stats, ArrayList<T> data, ArrayList<T> tempList, int l, int r) {
+  			int index;
+  			T pivot = data.get(l);
+  			tempList.clear();
+  	  		 
+  	  		for(int i = l+1; i<=r;i++) {
+  	  			T item = data.get(i);
+  	  			if(item.compareTo(pivot)<0) {
+  	  				tempList.add(item);
+  	  			}
+  	  		}
+  	  		index = l+tempList.size();
+  	  		tempList.add(pivot);
+  	  	
+  	  		for(int i = l+1; i<=r; i++) {
+  	  			T item = data.get(i);
+  	  			if(item.compareTo(pivot)>=0) {
+  	  				tempList.add(item);
+  	  			}
+  	  		}
+  	  		 
+  	  		for(int i = 0; i<tempList.size();i++) {
+  	  			data.set(i, tempList.get(i));
+  	  			
+  	  		}
+  	  		 
+  	
+  		return index;
   	 
   		 
-  		while(l<r) {
-  			T pivot = data.get(l);
-  			
-  			while(l<r && data.get(r).compareTo(pivot)>=0) {
-  				stats.comparisons++;
-  				r--; //keep traversing to the left.
-  			}
-  			stats.comparisons++; //one more comparisons when not entering the while loop
-  		
-  			if(l<r) {
-  				stats.swaps++;
-  				swap(data, l, r); //swap the left's & right's elements
-  				l++; //left index ++ since element smaller than pivot has been swap to the left.
-  			}
-  			
-  			while(l<r && data.get(l).compareTo(pivot)<=0) {
-  				stats.comparisons++;
-  				l++;  //keep traversing to the right.
-  			}
-  			stats.comparisons++; //one more comparisons when not entering the while loop
-  			
-  			if(l<r) {
-  				stats.swaps++;
-  				swap(data, l, r);
-  				r--; //right index -- since element larger than pivot has been swap to the right.
-  			}
-  		}
-  		return l; //where l = r, either l or r is the pivotIndex, return for the partition use.
+//  		while(l<r) {
+//  			 
+//  			
+//  			while(l<r && data.get(r).compareTo(pivot)>=0) {
+//  				stats.comparisons++;
+//  				r--; //keep traversing to the left.
+//  			}
+//  			stats.comparisons++; //one more comparisons when not entering the while loop
+//  		
+//  			if(l<r) {
+//  				stats.swaps++;
+//  				swap(data, l, r); //swap the left's & right's elements
+//  				l++; //left index ++ since element smaller than pivot has been swap to the left.
+//  			}
+//  			
+//  			while(l<r && data.get(l).compareTo(pivot)<=0) {
+//  				stats.comparisons++;
+//  				l++;  //keep traversing to the right.
+//  			}
+//  			stats.comparisons++; //one more comparisons when not entering the while loop
+//  			
+//  			if(l<r) {
+//  				stats.swaps++;
+//  				swap(data, l, r);
+//  				r--; //right index -- since element larger than pivot has been swap to the right.
+//  			}
+//  		}
+//  		return l; //where l = r, either l or r is the pivotIndex, return for the partition use.
   	}
 
   	//swap helper method
