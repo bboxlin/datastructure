@@ -13,6 +13,9 @@ import java.util.ArrayList;
  
 
 public class QuickSort<T extends Comparable<T>> extends Sorter<T> {
+	
+	private int cutOff = 3;
+	
     QuickSort() {
         name = "QuickSort";
     }
@@ -25,28 +28,54 @@ public class QuickSort<T extends Comparable<T>> extends Sorter<T> {
         //  Every data swap increment stats.swaps
         //  See Insertion Sort for an example of this in operation
  
-  		//quickSort(stats, data, 0, data.size()-1);
+  		quickSort(stats, data, 0, data.size()-1);
 		return data;
 	}
   	
   	
   	private void quickSort(SortStats stats, ArrayList<T> data, int l, int r) {
   		
-  		if(l>=r) {
-  			return;
+  		if(l + cutOff <= r) {
+  			int pivotIndex = partition(stats, data, l,r);
+  			
+  	  		//recursively do the partition to the left partition, until l = r 
+  	  		quickSort(stats, data, l, pivotIndex-1);
+  	  			
+  	  		//recursively do the partition to the to the right partition until l = r
+  	  		quickSort(stats, data, pivotIndex+1, r);
+  	  		
+  		}else {
+  			InsertionSort(stats, data);
   		}
   			
-  		int pivotIndex = partition(stats, data, l,r);
-  			
-  		//recursively do the partition to the left partition, until l = r 
-  		quickSort(stats, data, l, pivotIndex-1);
-  			
-  		//recursively do the partition to the to the right partition until l = r
-  		quickSort(stats, data, pivotIndex+1, r);
+  		 
   		
   	}
   	
-  	/*
+  	private void InsertionSort(SortStats stats, ArrayList<T> data) {
+  		for (int i = 1; i < data.size(); i++) {
+            T value = data.get(i);
+            int j = i - 1;
+            while( j >= 0 ) {
+                T curr_candidate = data.get(j);
+                stats.comparisons++;
+                if( curr_candidate.compareTo(value) > 0 ) {
+                    // System.out.println(value);
+                    stats.swaps++;
+                    data.set(j + 1, curr_candidate);
+                    j--;
+                }
+                else 
+                {
+                    break;
+                }
+            }
+            // System.out.println("J : " + (j + 1));
+            data.set(j + 1, value);
+        }
+	}
+
+	/*
   	 * <<Helper Method>>
   	 * Partition method purpose, this method will be recursively called by quickSort: 
   	 * 		arrange all elements left to the pivotIndex to be smaller than pivot, all elements right to the pivotIndex to be larger than pivot;
@@ -67,7 +96,7 @@ public class QuickSort<T extends Comparable<T>> extends Sorter<T> {
   		T pivot = data.get(l);
   		while(l<r) {
   			
-  			while(l<r && data.get(r).compareTo(pivot)>=0) {
+  			while(l<r && data.get(r).compareTo(pivot)>0) {
   				stats.comparisons++;
   				r--; //keep traversing to the left.
   			}
@@ -79,7 +108,7 @@ public class QuickSort<T extends Comparable<T>> extends Sorter<T> {
   				l++; //left index ++ since element smaller than pivot has been swap to the left.
   			}
   			
-  			while(l<r && data.get(l).compareTo(pivot)<=0) {
+  			while(l<r && data.get(l).compareTo(pivot)<0) {
   				stats.comparisons++;
   				l++;  //keep traversing to the right.
   			}
