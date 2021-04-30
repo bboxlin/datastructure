@@ -25,7 +25,7 @@ public class QuickSort<T extends Comparable<T>> extends Sorter<T> {
         //  Every data swap increment stats.swaps
         //  See Insertion Sort for an example of this in operation
  
-  		quickSort(stats, data, 0, data.size()-1);
+  		//quickSort(stats, data, 0, data.size()-1);
 		return data;
 	}
   	
