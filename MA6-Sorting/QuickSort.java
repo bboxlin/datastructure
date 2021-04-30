@@ -28,22 +28,25 @@ public class QuickSort<T extends Comparable<T>> extends Sorter<T> {
         //  See Insertion Sort for an example of this in operation
  
   		quickSort(stats, data, 0, data.size()-1);
+  	
 		return data;
 	}
   	
   	
   	private void quickSort(SortStats stats, ArrayList<T> data, int l, int r) {
-  		if(l>=r) {
-  			return;
+  		
+  		if(l<r) {
+  			
+  			int pivotIndex = partition(stats, data, l,r);
+  			
+  	  	  	//recursively do the partition to the left partition, until l = r 
+  	  	  	quickSort(stats, data, l, pivotIndex-1);
+  	  	  			
+  	  	  	//recursively do the partition to the to the right partition until l = r
+  	  	  	quickSort(stats, data, pivotIndex+1, r);
   		}
 
-  		int pivotIndex = partition(stats, data, l,r);
-  			
-  	  	//recursively do the partition to the left partition, until l = r 
-  	  	quickSort(stats, data, l, pivotIndex-1);
-  	  			
-  	  	//recursively do the partition to the to the right partition until l = r
-  	  	quickSort(stats, data, pivotIndex+1, r);
+  		 
   	  				
   	}
   	
@@ -66,11 +69,12 @@ public class QuickSort<T extends Comparable<T>> extends Sorter<T> {
   	 * 4. return pivotIndex for the use of partitioning.
   	 */
   	private int partition(SortStats stats, ArrayList<T> data, int l, int r) {
-  		
-  		T pivot = data.get(l);
+  	 
+  		 
   		while(l<r) {
+  			T pivot = data.get(l);
   			
-  			while(l<r && data.get(r).compareTo(pivot)>0) {
+  			while(l<r && data.get(r).compareTo(pivot)>=0) {
   				stats.comparisons++;
   				r--; //keep traversing to the left.
   			}
@@ -79,10 +83,10 @@ public class QuickSort<T extends Comparable<T>> extends Sorter<T> {
   			if(l<r) {
   				stats.swaps++;
   				swap(data, l, r); //swap the left's & right's elements
-  				l++; //left index ++ since element smaller than pivot has been swap to the left.
+  				//l++; //left index ++ since element smaller than pivot has been swap to the left.
   			}
   			
-  			while(l<r && data.get(l).compareTo(pivot)<0) {
+  			while(l<r && data.get(l).compareTo(pivot)<=0) {
   				stats.comparisons++;
   				l++;  //keep traversing to the right.
   			}
@@ -91,7 +95,7 @@ public class QuickSort<T extends Comparable<T>> extends Sorter<T> {
   			if(l<r) {
   				stats.swaps++;
   				swap(data, l, r);
-  				r--; //right index -- since element larger than pivot has been swap to the right.
+  				//r--; //right index -- since element larger than pivot has been swap to the right.
   			}
   		}
   		return l; //where l = r, either l or r is the pivotIndex, return for the partition use.
