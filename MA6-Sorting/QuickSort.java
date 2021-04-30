@@ -32,16 +32,18 @@ public class QuickSort<T extends Comparable<T>> extends Sorter<T> {
   	
   	private void quickSort(SortStats stats, ArrayList<T> data, int l, int r) {
   		
-  		if(l<r) {
-  			
-  			int pivotIndex = partition(stats, data, l,r);
-  			
-  			//recursively do the partition to the left partition, until l = r 
-  			quickSort(stats, data, l, pivotIndex-1);
-  			
-  			//recursively do the partition to the to the right partition until l = r
-  			quickSort(stats, data, pivotIndex+1, r);
+  		if(l>=r) {
+  			return;
   		}
+  			
+  		int pivotIndex = partition(stats, data, l,r);
+  			
+  		//recursively do the partition to the left partition, until l = r 
+  		quickSort(stats, data, l, pivotIndex-1);
+  			
+  		//recursively do the partition to the to the right partition until l = r
+  		quickSort(stats, data, pivotIndex+1, r);
+  		
   	}
   	
   	/*
