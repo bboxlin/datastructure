@@ -27,9 +27,36 @@ public class QuickSort<T extends Comparable<T>> extends Sorter<T> {
         //  Every data swap increment stats.swaps
         //  See Insertion Sort for an example of this in operation
  
-  		quickSort(stats, data, 0, data.size()-1);
-  	
+  		//quickSort(stats, data, 0, data.size()-1);
+  		
+  		if(data.size()>1) {
+	  		T pivot = data.get(0);
+	  		ArrayList<T> smallSub = new ArrayList<>();
+	  		ArrayList<T> largeSub = new ArrayList<>();
+	  		
+	  		for(int i = 1; i<data.size();i++) {
+	  			stats.comparisons++;
+	  			if(data.get(i).compareTo(pivot)<=0) {
+	  				smallSub.add(data.get(i));
+	  			}else {
+	  				largeSub.add(data.get(i));
+	  			}
+	  		}
+	  		if(smallSub.size()>1) {
+	  			sort(stats, smallSub);
+	  		}
+	  		if(largeSub.size()>1) {
+	  			sort(stats, largeSub);
+	  		}
+	  		data.removeAll(data);
+	  		data.addAll(smallSub);
+	  		data.add(pivot);
+	  		data.addAll(largeSub);
+  		}
+  		
 		return data;
+  	
+		//return data;
 	}
   	
   	
@@ -83,7 +110,7 @@ public class QuickSort<T extends Comparable<T>> extends Sorter<T> {
   			if(l<r) {
   				stats.swaps++;
   				swap(data, l, r); //swap the left's & right's elements
-  				//l++; //left index ++ since element smaller than pivot has been swap to the left.
+  				l++; //left index ++ since element smaller than pivot has been swap to the left.
   			}
   			
   			while(l<r && data.get(l).compareTo(pivot)<=0) {
@@ -95,7 +122,7 @@ public class QuickSort<T extends Comparable<T>> extends Sorter<T> {
   			if(l<r) {
   				stats.swaps++;
   				swap(data, l, r);
-  				//r--; //right index -- since element larger than pivot has been swap to the right.
+  				r--; //right index -- since element larger than pivot has been swap to the right.
   			}
   		}
   		return l; //where l = r, either l or r is the pivotIndex, return for the partition use.
