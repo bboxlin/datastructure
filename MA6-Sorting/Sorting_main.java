@@ -105,7 +105,18 @@ public class Sorting_main {
 		}
 
 		// Radix sort?
+		System.out.println("****************************************************************");
+		System.out.println("****** TESTING RADIX SORT                           ************");
+		System.out.println("****************************************************************");
+		RadixSort<Integer> radix = new RadixSort<>();
 
+		for( DataSet set : sets ) {
+			if( set.presorted.size() < 30 && set.presorted.size() != 0) {
+				return_code |= test_sort_alg(radix, set, true);
+			} else {
+				return_code |= test_sort_alg(radix, set, false);
+			}
+		}
 
 
 		return return_code;
