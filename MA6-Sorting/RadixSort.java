@@ -111,7 +111,7 @@ public class RadixSort<T extends Comparable<T>> extends Sorter<T>  {
 				max = data.get(i);
 			}
 		}
-		int maxValue = (int)max;
+		int maxValue = Integer.parseInt(max.toString());;
 		int digit = 1;
 		while(maxValue>0) {
 			maxValue = maxValue / 10;
