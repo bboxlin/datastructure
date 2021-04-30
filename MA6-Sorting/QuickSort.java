@@ -14,7 +14,6 @@ import java.util.ArrayList;
 
 public class QuickSort<T extends Comparable<T>> extends Sorter<T> {
 	
-	private int cutOff = 3;
 	
     QuickSort() {
         name = "QuickSort";
@@ -34,46 +33,18 @@ public class QuickSort<T extends Comparable<T>> extends Sorter<T> {
   	
   	
   	private void quickSort(SortStats stats, ArrayList<T> data, int l, int r) {
-  		
-  		if(l + cutOff <= r) {
-  			int pivotIndex = partition(stats, data, l,r);
+
+  		int pivotIndex = partition(stats, data, l,r);
   			
-  	  		//recursively do the partition to the left partition, until l = r 
-  	  		quickSort(stats, data, l, pivotIndex-1);
+  	  	//recursively do the partition to the left partition, until l = r 
+  	  	quickSort(stats, data, l, pivotIndex-1);
   	  			
-  	  		//recursively do the partition to the to the right partition until l = r
-  	  		quickSort(stats, data, pivotIndex+1, r);
-  	  		
-  		}else {
-  			InsertionSort(stats, data);
-  		}
-  			
-  		 
-  		
+  	  	//recursively do the partition to the to the right partition until l = r
+  	  	quickSort(stats, data, pivotIndex+1, r);
+  	  				
   	}
   	
-  	private void InsertionSort(SortStats stats, ArrayList<T> data) {
-  		for (int i = 1; i < data.size(); i++) {
-            T value = data.get(i);
-            int j = i - 1;
-            while( j >= 0 ) {
-                T curr_candidate = data.get(j);
-                stats.comparisons++;
-                if( curr_candidate.compareTo(value) > 0 ) {
-                    // System.out.println(value);
-                    stats.swaps++;
-                    data.set(j + 1, curr_candidate);
-                    j--;
-                }
-                else 
-                {
-                    break;
-                }
-            }
-            // System.out.println("J : " + (j + 1));
-            data.set(j + 1, value);
-        }
-	}
+  
 
 	/*
   	 * <<Helper Method>>
