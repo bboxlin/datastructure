@@ -1,6 +1,9 @@
 
+
 import java.util.ArrayList;
-import java.util.LinkedList;
+
+ 
+ 
 
 
 
@@ -29,6 +32,17 @@ public class RadixSort<T extends Comparable<T>> extends Sorter<T>  {
 	 * |   |   |   
 	 * 0   1   2   3   4   5   6   7   8    9  ----------------> ArrayList (List of Buckets)
 	 * 
+	 * 
+	 * Iterations: 
+	 * <After Each iteration, let data list being empty, dump elements in the Buckets into the data list in the order of DOWN then RIGHT, basically traverse
+	 * BucketList element then traver the elements in the bucket.
+	 *                                                                                ---> right
+	 *                                                                               0  1  2  3 4  ...
+	 *                                                                               |
+	 *                                                                        |      x
+	 *                                                                        |      x
+	 *                                                                       Down    x  
+	 *                                                                       
 	 *     (digit)           1  ---   Starting from lowest digit, elements are add to the digit position of the BucketList in a ArrayList data structure. 
 	 *                                << We want to use the arranged elements that stored in the BucketList to do the next iteration, so we set the 
 	 *                                  data list = All elements in the buckets in order(several buckets), for the reference. 
@@ -39,19 +53,20 @@ public class RadixSort<T extends Comparable<T>> extends Sorter<T>  {
 	 *                       n  ---   After arranged, all being sorted.
 	 *                       
 	 *     where n = numbers of the digit the max value had = numbers of iteration we will need 
-	 *            
+	 *   
+	 *      
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
 	private void radixSort(SortStats stats, ArrayList<T> data) {
 		
 		//the numbers of the digit the max valu had.
-		int digit = getMaxDigit(stats, data);
+		int maxLength = getMaxDigit(stats, data);
 		
 		//construct up the structure buckets in side of the list of buckets
-		ArrayList<LinkedList<T>> bucketList = new ArrayList<>();
+		ArrayList<ArrayList<T>> bucketList = new ArrayList<>();
 		for(int i = 0; i< 10; i++) {
-			LinkedList<T> bucket = new LinkedList<>(); //buckets
+			ArrayList<T> bucket = new ArrayList<>(); //buckets
 			bucketList.add(bucket);
 		}
 		
@@ -59,7 +74,7 @@ public class RadixSort<T extends Comparable<T>> extends Sorter<T>  {
 		int i = 0;
 		int mod = 10;
 		int div = 1;
-		while(i<digit) {
+		while(i<maxLength) {
 			//traverse through the data list
 			for(int j = 0; j<data.size(); j++) {
 				int cur = Integer.parseInt(data.get(j).toString());
@@ -70,7 +85,7 @@ public class RadixSort<T extends Comparable<T>> extends Sorter<T>  {
 				Object curval = cur;
 				
 				//digitVal = value of the current digit = position of the bucketList, then add currentValue (Linkedlist) to that position.
-				bucketList.get(digitVal).addLast((T)curval);
+				bucketList.get(digitVal).add((T)curval);
 			}
 			i++;
 			mod*=10;
@@ -88,12 +103,10 @@ public class RadixSort<T extends Comparable<T>> extends Sorter<T>  {
 	 * Function: To reset the data list in the new order, the order is according to the elements in the buckets.
 	 * 
 	 */
-	private void setDataList(ArrayList<T> data, ArrayList<LinkedList<T>> bucketList) {
+	private void setDataList(ArrayList<T> data, ArrayList<ArrayList<T>> bucketList) {
 		data.clear();
-		for (LinkedList<T> currList : bucketList) { 
-			for(int i = 0; i<currList.size();i++) {
-				data.add(currList.get(i));
-			}
+		for (ArrayList<T> currList : bucketList) { 
+			data.addAll(currList);
             currList.clear();
         }
 	 
@@ -114,14 +127,12 @@ public class RadixSort<T extends Comparable<T>> extends Sorter<T>  {
 				max = data.get(i);
 			}
 		}
-		int maxValue = Integer.parseInt(max.toString());;
-		int digit = 1;
-		while(maxValue>0) {
-			maxValue = maxValue / 10;
-			digit ++;
-		}
+		int digit = (max+"").length();
 		return digit;
+
 	}
 
 }
+
+
 
