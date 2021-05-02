@@ -36,15 +36,27 @@ class HashMapDupDetector extends StringDupDetectorBase {
         // These two arrays are stored in the results when your algorithm is done
         // NOTE: The duplicates ArrayList *cannot* have duplicates within itself!
         ArrayList<String> duplicates = new ArrayList<>();   // Lists a set of strings that appear more than once
-
+        
+        //buffer layer that to help find the duplicate list
         HashMap<String, String> map = new HashMap<>();
 
         // Algorithm begins here
 
 
         // PA1 CODE GOES HERE! -- MUST use the HashMap (map) for your solution, not Crandall's Brute Force searching!
-
-
+        
+        for(int i = 0; i<strings.size(); i++) {
+        	String cur = strings.get(i);
+        	//we don't want duplicate list have the duplicate string itself
+        	//we want to add duplicate string in the string list to duplicates list
+        	//so if hashmap contain the same key, it is duplicated.
+        	if(!duplicates.contains(cur) && map.containsKey(cur) ) {
+        		duplicates.add(cur);
+        	}
+        	//we use hashmap as a buffer layer to store strings from string list
+        	map.put(cur, null);
+        }
+        
         // Should have an ArrayList of duplicates to return... right?
         return duplicates;
     }
