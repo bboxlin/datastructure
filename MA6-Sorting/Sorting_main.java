@@ -165,7 +165,7 @@ public class Sorting_main {
 			return ret;
 		}
 		for( int i = 0; i < system_sorted.size(); i++ ) {
-			if(system_sorted.get(i).compareTo(alg_sorted.get(i) )) {
+			if(system_sorted.get(i).compareTo(alg_sorted.get(i) ) != 0) {
 				ret++;
 			}
 		}
